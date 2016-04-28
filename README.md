@@ -1,101 +1,47 @@
-[![Android Gems](http://www.android-gems.com/badge/chenupt/DragTopLayout.svg?branch=master)](http://www.android-gems.com/lib/chenupt/DragTopLayout)
+引用的项目Github地址：[https://github.com/chenupt/DragTopLayout](https://github.com/chenupt/DragTopLayout)
+修改部分bug后并添加Viewpager+RecyclerView的使用范例。
 
-DragTopLayout
----
-![icon](https://raw.githubusercontent.com/chenupt/DragTopLayout/master/imgs/icon.png)
+#### 1.知识预备
+* 事件传递机制
+* ViewDragHelper使用分析：[Android ViewDragHelper源码解析](http://www.cnblogs.com/lqstayreal/p/4500219.html)
 
+#### 2.控件思路分析
+* 目标效果：豌豆荚主页效果
+* 思路分析：整个View分为topView和contentView两部分，并且利用ViewDragHelper接管Touch事件，是否接管由一个标志性的boolean变量shouldIntercept决定，使得topView可以根据手势的滑动收缩Collapsed或者展开Expand，其中：
+1.topView收缩时：ViewDragHelper不接管Touch事件，由contentView自己处理。
+2.topView展开时：ViewDragHelper接管Touch事件，事件拦截，contentView不处理。
+3.状态的衔接：滑动过程中contentView中有监听滑动动作，保证对滑动到顶部的事件实时监听，
+比如调用方法：AttachUtil.isRecyclerViewAttach(recyclerView)
+并通过回调或者EventBus通信传递到使用该DragTopLayout的页面，可以对该控件的标志变量shouldIntercept进行实时更新，保证Touch事件有恰当的处理（根据各自的场景由ViewDragHelper或者contentView处理滑动）。
+* 存在的问题：主要bug点在于：
+1.tab点击选择页面时，如果页面是recyclerview显示时不会触发onscroll所以不会更新点击事件托管状态。但是ListView和GridView点击tab后会触发onscroll就接着传递了当前页面的状态。所以如果Fragment中使用的是recyclerview，需要在切换到该Fragment中获取recyclerView的状态来判断shouldIntercept。
+使用viewpager与framelayout也会影响，因为前者选中当前界面的时候还会触发临界的ListView或者GridView滑动。
+2.tab空间区域点击判断cotentView的问题，区域误判，场景误判。返回true的前提还有当前是托管状态。--加强判断条件
+3.一个tab页面滑到顶部联动第二tab页面个自动到顶部时，第二tab页面从很靠后位置滑动到顶部，切换tab的时候还未滑动完，导致topview的状态变化，因为这个方法引发onScroll；去掉耗时较长的动画滑动，将recyclerViewParent.smoothScrollToPosition(0);
+改为recyclerViewParent.getLayoutManager().scrollToPosition(0);
 
-Sometimes we need to show a top view above a ViewPager or ListView. DragTopLayout is a ViewGroup that contains a content view and a top menu view. You can show the top menu view just drag down the content view at the right time, or drag it up to fold.
+#### 3.app使用中偶现问题
+对偶现问题的调查-从代码角度；从现象角度--如何必现或尽最大可能重现
+Q1：各分页面fagment各自滑动后点击tab切换，topview状态或者fragment的滑动状态不对。
+Q2：实现新浪微博个人主页的效果，有一个页面滑动到顶部且引起topview显示后，另一个页面也滑动到顶部。
+Q3：in记快速上下暴力滑动时topview没有收缩。
+Q4：in记页面，topView和contentView边缘临界滑动，topView不隐藏。
+解决方法：
+关键解决实时获取正确的指示变量并设置到页面的DragTopLayout实例中。
+* 内部修改：加强变量的判断。tryCaptureView中
+>// return child == dragContentView
+// 修改原因：加强条件，dragContentView可以移动的前提也是shouldIntercept==true
+return child == dragContentView && shouldIntercept;
+* 使用时注意：
+A1：tab的点击切换页面的时，同步更新控件的状态，只监听当前显示的页面的滑动：除了传递boolean的shouldIntercept，还要再传递boolean值的来源标志。
+A2：在状态监听中检测各个tab下列表滑动的状态，适当的条件下自动滑动到首条数据recyclerView.smoothScrollToPosition(0);改为recyclerView.getLayoutManager().scrollToPosition(0);
+A3：弄清异常状态的值，对异常状态调整。
+A4：临界状态，由contentView过渡到topView滑动时内部判断不准确，改为在使用的Activity中接收到的onEvent()或者回调接口中判断。
 
+#### 4.引用文档
+* [仿豌豆荚ViewPager下拉：DragTopLayout](http://www.open-open.com/lib/view/open1422430262923.html)
 
+* [ViewDragHelper源码分析](http://www.jianshu.com/p/07d717ef0b28?utm_campaign=hugo&utm_medium=reader_share&utm_content=note)
 
-The sample app: [click me](https://github.com/chenupt/DragTopLayout/raw/master/imgs/sample-debug-1.2.1.apk)
-
-Here is a show case: 
-
-![gif](https://raw.githubusercontent.com/chenupt/DragTopLayout/master/imgs/dragtop_1.1.0.gif)
-
-Usage
----
-Add the dependency to your build.gradle.
-
-```
-dependencies {
-    compile 'com.github.chenupt.android:dragtoplayout:1.2.1@aar'
-}
-```
-
-Add the DragTopLayout in your layout.
-
-```xml
- <github.chenupt.dragtoplayout.DragTopLayout
-     android:layout_width="match_parent"
-     android:layout_height="match_parent">
-
-     <!--top view-->
-     <LinearLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:gravity="center"
-         android:orientation="vertical">
-         ...
-     </LinearLayout>
-
-     <!--content view-->
-     <LinearLayout
-         android:orientation="vertical"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent">
-         ...
-     </LinearLayout>
-
- </github.chenupt.dragtoplayout.DragTopLayout>
-```
-
-[XML Attributes](https://github.com/chenupt/DragTopLayout/blob/dev/library/src/main/res/values/attrs.xml)
-
-Changelog
----
-###v1.2.1
- * Fixed [#12](https://github.com/chenupt/DragTopLayout/issues/12)
- * Fixed [#20](https://github.com/chenupt/DragTopLayout/issues/20)
- * Support [PullToRefresh](https://github.com/chenupt/DragTopLayout/blob/master/sample%2Fsrc%2Fmain%2Fjava%2Fgithub%2Fchenupt%2Fdragtoplayout%2Fdemo%2Fpulltorefresh%2FPullToRefreshTopLayout.java)
-
-###v1.2.0
- * Support Scrolling continue [#7](https://github.com/chenupt/DragTopLayout/pull/7).@sockeqwe
- * Retain state [#8](https://github.com/chenupt/DragTopLayout/pull/8).@sockeqwe
- * Fixed [#10](https://github.com/chenupt/DragTopLayout/issues/10), [#5](https://github.com/chenupt/DragTopLayout/issues/5), [#4](https://github.com/chenupt/DragTopLayout/issues/4).
- * Remove wizard.
-
-###v1.1.0
- * Support [collapse offset](https://github.com/chenupt/DragTopLayout/issues/2).
- * Support drag down while attaching top view.
- * Support attributes in xml.
- * Add attach util.
- * New sample shows how to control content view attach with ListView & [RecyclerView](https://github.com/chenupt/DragTopLayout/issues/3) & GridView & ScrollView & WebView.
- 
-
-Developed By
----
- * Chenupt - <chenupt@outlook.com>
- * G+ [chenupt](https://plus.google.com/u/0/109194013506774756478)
- * 微博：[chenupt](http://weibo.com/p/1005052159173535/home)
- * QQ：753785666
-
-License
----
-
-    Copyright 2015 chenupt
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+* [Android ViewDragHelper源码解析](http://www.cnblogs.com/lqstayreal/p/4500219.html)
 
