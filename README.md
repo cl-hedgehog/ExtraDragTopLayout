@@ -26,8 +26,8 @@ StripTabHideActivity将tab切换放在了topView里。
 对偶现问题的调查-从代码角度；从现象角度--如何必现或尽最大可能重现
 Q1：各分页面fagment各自滑动后点击tab切换，topview状态或者fragment的滑动状态不对。
 Q2：实现新浪微博个人主页的效果，有一个页面滑动到顶部且引起topview显示后，另一个页面也滑动到顶部。
-Q3：in记快速上下暴力滑动时topview没有收缩。
-Q4：in记页面，topView和contentView边缘临界滑动，topView不隐藏。
+Q3：快速上下暴力滑动时topview没有收缩。
+Q4：topView和contentView边缘临界滑动，topView不隐藏。
 解决方法：
 关键解决实时获取正确的指示变量并设置到页面的DragTopLayout实例中。
 * 内部修改：加强变量的判断。tryCaptureView中
