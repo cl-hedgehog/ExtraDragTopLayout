@@ -1,5 +1,7 @@
-引用的项目Github地址：[https://github.com/chenupt/DragTopLayout](https://github.com/chenupt/DragTopLayout)
-修改部分bug后并添加Viewpager+RecyclerView的使用范例。
+引用的项目Github地址：[https://github.com/chenupt/DragTopLayout](https://github.com/chenupt/DragTopLayout)。
+使用过程中遇到了部分bug，原来的Demo中也有一些地方不合适，修改并添加了Viewpager+RecyclerView的使用范例。并在原来的DragTopLayout的类中添加了注释。增加的例子从主页右上角的菜单键点开，最后两个就是了，名称为ViewpagerRecyclerActivity和StripTabHideActivity。其中
+ViewpagerRecyclerActivity更像新浪微博的个人主页，两个tab中的列表只要有一个达到顶部并使得topView展开，另一个tab中的列表自动滚动到第一条。
+StripTabHideActivity将tab切换放在了topView里。
 
 #### 1.知识预备
 * 事件传递机制
@@ -11,11 +13,11 @@
 1.topView收缩时：ViewDragHelper不接管Touch事件，由contentView自己处理。
 2.topView展开时：ViewDragHelper接管Touch事件，事件拦截，contentView不处理。
 3.状态的衔接：滑动过程中contentView中有监听滑动动作，保证对滑动到顶部的事件实时监听，
-比如调用方法：AttachUtil.isRecyclerViewAttach(recyclerView)
-并通过回调或者EventBus通信传递到使用该DragTopLayout的页面，可以对该控件的标志变量shouldIntercept进行实时更新，保证Touch事件有恰当的处理（根据各自的场景由ViewDragHelper或者contentView处理滑动）。
+比如对于RecyclerView调用方法：AttachUtil.isRecyclerViewAttach(recyclerView)可以获取当前是否需要拖管touch事件。
+并通过回调或者EventBus通信传递到使用DragTopLayout的页面，可以对该控件的标志变量shouldIntercept进行实时更新，保证Touch事件有恰当的处理（根据各自的场景由ViewDragHelper或者contentView处理滑动）。
 * 存在的问题：主要bug点在于：
-1.tab点击选择页面时，如果页面是recyclerview显示时不会触发onscroll所以不会更新点击事件托管状态。但是ListView和GridView点击tab后会触发onscroll就接着传递了当前页面的状态。所以如果Fragment中使用的是recyclerview，需要在切换到该Fragment中获取recyclerView的状态来判断shouldIntercept。
-使用viewpager与framelayout也会影响，因为前者选中当前界面的时候还会触发临界的ListView或者GridView滑动。
+1.tab点击选择页面时，如果页面是recyclerview点击时不会触发onscroll()所以不会更新点击事件托管状态。但是页面使用的是ListView或者GridView时点击tab后会触它们的发onscroll(),就触发了当前首条是否显示的状态传递，主页面收到了可能会误用，导致DragTopLayout的状态不对了。所以如果Fragment中使用的是recyclerview，需要在切换到该Fragment中获取recyclerView的状态来判断shouldIntercept。
+使用viewpager和framelayout也有不同的影响，因为前者选中当前界面的时候还会触发相邻的ListView或者GridView的onScroll()。
 2.tab空间区域点击判断cotentView的问题，区域误判，场景误判。返回true的前提还有当前是托管状态。--加强判断条件
 3.一个tab页面滑到顶部联动第二tab页面个自动到顶部时，第二tab页面从很靠后位置滑动到顶部，切换tab的时候还未滑动完，导致topview的状态变化，因为这个方法引发onScroll；去掉耗时较长的动画滑动，将recyclerViewParent.smoothScrollToPosition(0);
 改为recyclerViewParent.getLayoutManager().scrollToPosition(0);
