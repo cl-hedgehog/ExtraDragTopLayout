@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tool_bar"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:background="?attr/colorPrimaryDark"
+            android:elevation="10dp"
+            android:minHeight="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+        <github.chenupt.dragtoplayout.DragTopLayout
+            android:id="@+id/drag_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            >
+
+            <include
+                layout="@layout/layout_top_view"/>
+
+            <include
+                layout="@layout/layout_content_view"/>
+
+        </github.chenupt.dragtoplayout.DragTopLayout>
+    </LinearLayout>
+</RelativeLayout>

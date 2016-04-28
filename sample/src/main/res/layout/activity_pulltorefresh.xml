@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="10dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:minHeight="?attr/actionBarSize" />
+    <github.chenupt.dragtoplayout.demo.pulltorefresh.PullToRefreshTopLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pull_to_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        app:dtlTopView="@+id/top_view"
+        app:dtlDragContentView="@+id/content_view"
+        app:dtlOverDrag="false"
+        app:dtlCaptureTop="false">
+        <LinearLayout
+            android:id="@+id/top_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_margin="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/content_view"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </ListView>
+        </LinearLayout>
+    </github.chenupt.dragtoplayout.demo.pulltorefresh.PullToRefreshTopLayout>
+</LinearLayout>

@@ -1,0 +1,45 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_menu_icon"
+        android:orderInCategory="100"
+        android:title="@string/action_menu_icon"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_toggle"
+        android:orderInCategory="101"
+        android:title="@string/action_toggle"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_over_drag"
+        android:orderInCategory="102"
+        android:title="@string/action_over"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_offset"
+        android:orderInCategory="103"
+        android:title="@string/action_offset"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_pulltorefresh"
+        android:orderInCategory="104"
+        android:title="@string/action_pulltorefresh"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="200"
+        android:title="@string/action_about"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_recycler"
+        android:orderInCategory="200"
+        android:title="@string/action_viewpager_recycler"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_tab_hide"
+        android:orderInCategory="200"
+        android:title="@string/action_strip_tab_hide"
+        app:showAsAction="never" />
+</menu>

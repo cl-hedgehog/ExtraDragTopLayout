@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/ll_top_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/header_default_bk"
+    android:gravity="center"
+    android:orientation="vertical"
+    >
+
+
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
+        android:src="@drawable/header_default_bk"/>
+
+    <TextView
+        android:id="@+id/tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="Top View"
+        android:textColor="@color/white"
+        android:textSize="18sp"/>
+
+    <ImageView
+        android:id="@+id/iv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_nickname"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:src="@drawable/iv_loading"/>
+
+    <RadioGroup
+        android:id="@+id/rg_tab"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@+id/view_line"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        >
+
+        <RadioButton
+            android:id="@+id/rbtn_hot"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="最热"/>
+
+        <RadioButton
+            android:id="@+id/rbtn_new"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:text="最新"/>
+    </RadioGroup>
+
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="#999"></View>
+
+
+</RelativeLayout>
