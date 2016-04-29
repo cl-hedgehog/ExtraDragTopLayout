@@ -35,16 +35,20 @@ Q4：topView和contentView边缘临界滑动，topView不隐藏。
 解决方法：
 关键解决实时获取正确的指示变量并设置到页面的DragTopLayout实例中。
 * 内部修改：加强变量的判断。tryCaptureView中
->// return child == dragContentView
+
+// return child == dragContentView
+
 // 修改原因：加强条件，dragContentView可以移动的前提也是shouldIntercept==true
+
 return child == dragContentView && shouldIntercept;
+
 * 使用时注意：
 
 A1：tab的点击切换页面的时，同步更新控件的状态，只监听当前显示的页面的滑动：除了传递boolean的shouldIntercept，还要再传递boolean值的来源标志。
 
 A2：在状态监听中检测各个tab下列表滑动的状态，适当的条件下自动滑动到首条数据recyclerView.smoothScrollToPosition(0);改为recyclerView.getLayoutManager().scrollToPosition(0);
 
-A3：弄清异常状态的值，对异常状态调整。
+A3：弄清异常状态的值，对异常状态调整。topView显示与否与contentView中的滑动托管的boolean值shouldIntercept。
 
 A4：临界状态，由contentView过渡到topView滑动时内部判断不准确，改为在使用的Activity中接收到的onEvent()或者回调接口中判断。
 
