@@ -52,7 +52,20 @@ A3：弄清异常状态的值，对异常状态调整。topView显示与否与co
 
 A4：临界状态，由contentView过渡到topView滑动时内部判断不准确，改为在使用的Activity中接收到的onEvent()或者回调接口中判断。
 
-#### 4.引用文档
+#### 4.使用DragTopLayout的步骤：
+
+1.在使用该DragTopLayout的主类里，步骤：
+- mDragLayout.listener(mPanelListener); 　// 设定下拉刷新的对应动作，设定onPanelStateChanged改变时的动作，一定要设定的：// 有一个到顶部，其他都到顶部
+- 里面至少有两个Fragment，每个都需要绑定OnDragScrollListener，这里根据传来的状态和当前tab的名称确定TouchMode：mDragLayout.setTouchMode(shouldDelegateTouch);
+- 在点击tab切换时，需要updateDragTopStatus，根据当前显示的fragmentCurrent的状态，更新TouchMode：mDragLayout.setTouchMode(fragmentCurrent.getShouldDelegateTouch());
+
+2.包含的Fragment：
+
+- 必须或者父类必须要继承自DragTopBaseFragment
+- 调用：setRecyclerView(mRecyclerView);这是DragTopBaseFragment的方法，mRecyclerView是该Fragment中的唯一的那个RecyclerView。
+- 在mRecyclerView绑定的onScroll中调用mOnDragScrollListener.onRecyclerScroll(recyclerView, TAG);将滑动状态透传给使用该DragTopLayout的主类
+
+#### 5.引用文档
 * [仿豌豆荚ViewPager下拉：DragTopLayout](http://www.open-open.com/lib/view/open1422430262923.html)
 
 * [ViewDragHelper源码分析](http://www.jianshu.com/p/07d717ef0b28?utm_campaign=hugo&utm_medium=reader_share&utm_content=note)
